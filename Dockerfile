@@ -1,31 +1,40 @@
-FROM tensorflow/tensorflow
-MAINTAINER Sam <elucidation@gmail.com>
+# Pull the base image with python 3.7 as a runtime for your Lambda
+FROM public.ecr.aws/lambda/python:3.7
 
-# Install python and pip and use pip to install the python reddit api PRAW
-RUN apt-get -y update && apt-get install -y \
-  python-dev \
-  libxml2-dev \
-  libxslt1-dev \
-  libjpeg-dev \
-  vim \
-   && apt-get clean
+# Copy the earlier created requirements.txt file to the container
+COPY requirements.txt ./
 
-# Install python reddit api related files
-RUN pip install praw==4.3.0 beautifulsoup4==4.4.1 lxml==3.3.3 Pillow==4.0.0 html5lib==1.0b8
+# Install OS packages for Pillow-SIMD
+RUN yum -y install tar wget gzip zlib freetype-devel unzip \
+    gcc \
+    ghostscript \
+    lcms2-devel \
+    libffi-devel \
+    libimagequant-devel \
+    libjpeg-devel \
+    libraqm-devel \
+    libtiff-devel \
+    libwebp-devel \
+    make \
+    openjpeg2-devel \
+    sudo \
+    tcl-devel \
+    tk-devel \
+    tkinter \
+    which \
+    xorg-x11-server-Xvfb \
+    zlib-devel \
+    && yum clean all
 
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Install the python requirements from requirements.txt
+RUN python3.7 -m pip install -r requirements.txt
 
-# Remove jupyter related files
-RUN rm -rf /notebooks /run_jupyter.sh
+COPY app.py ./
 
-# Copy code over
-COPY . /tcb/
+RUN wget https://codeload.github.com/Elucidation/tensorflow_chessbot/zip/chessfenbot
+RUN unzip chessfenbot
+RUN mv tensorflow_chessbot-chessfenbot/* ./
+RUN rm -rf tensorflow_chessbot-chessfenbot
+RUN rm chessfenbot
 
-WORKDIR /tcb
-
-# Run chessbot by default
-CMD ["/tcb/run_chessbot.sh"]
-
-# Start up the docker instance with the proper auth file using
-# <machine>$ docker run -dt --rm --name cfb -v <local_auth_file>:/tcb/auth_config.py elucidation/tensorflow_chessbot
+CMD ["app.lambda_handler"]
