@@ -63,7 +63,7 @@ class ChessboardPredictor(object):
   """ChessboardPredictor using saved model"""
   def __init__(self, frozen_graph_path='saved_models/frozen_graph.pb'):
     # Restore model using a frozen graph.
-    print("\t Loading model '%s'" % frozen_graph_path)
+    #print("\t Loading model '%s'" % frozen_graph_path)
     graph = load_graph(frozen_graph_path)
     self.sess = tf.compat.v1.Session(graph=graph)
 
@@ -72,12 +72,12 @@ class ChessboardPredictor(object):
     self.keep_prob = graph.get_tensor_by_name('tcb/KeepProb:0')
     self.prediction = graph.get_tensor_by_name('tcb/prediction:0')
     self.probabilities = graph.get_tensor_by_name('tcb/probabilities:0')
-    print("\t Model restored.")
+    #print("\t Model restored.")
 
   def getPrediction(self, tiles):
     """Run trained neural network on tiles generated from image"""
     if tiles is None or len(tiles) == 0:
-      print("Couldn't parse chessboard")
+      #print("Couldn't parse chessboard")
       return None, 0.0
     
     # Reshape into Nx1024 rows of input data, format used by neural network
@@ -107,7 +107,7 @@ class ChessboardPredictor(object):
     
     # Exit on failure to load image
     if img is None:
-      print('Couldn\'t load URL: "%s"' % url)
+      #print('Couldn\'t load URL: "%s"' % url)
       return result
 
     # Resize image if too large
@@ -115,7 +115,7 @@ class ChessboardPredictor(object):
 
     # Exit on failure if image was too large teo resize
     if img is None:
-      print('Image too large to resize: "%s"' % url)
+      #print('Image too large to resize: "%s"' % url)
       return result
 
     # Look for chessboard in image, get corners and split chessboard into tiles
@@ -123,7 +123,7 @@ class ChessboardPredictor(object):
 
     # Exit on failure to find chessboard in image
     if tiles is None:
-      print('Couldn\'t find chessboard in image')
+      #print('Couldn\'t find chessboard in image')
       return result
     
     # Make prediction on input tiles
@@ -140,7 +140,7 @@ class ChessboardPredictor(object):
     return result
 
   def close(self):
-    print("Closing session.")
+    #print("Closing session.")
     self.sess.close()
 
 ###########################################################
@@ -172,12 +172,14 @@ def main(args):
   # Create Visualizer url link
   if args.url:
     viz_link = helper_image_loading.getVisualizeLink(corners, args.url)
-    print('---\nVisualize tiles link:\n %s\n---' % viz_link)
+    #print('---\nVisualize tiles link:\n %s\n---' % viz_link)
 
   if args.url:
-    print("\n--- Prediction on url %s ---" % args.url)
+    hi=5
+    #print("\n--- Prediction on url %s ---" % args.url)
   else:
-    print("\n--- Prediction on file %s ---" % args.filepath)
+    hi=5
+    #print("\n--- Prediction on file %s ---" % args.filepath)
   
   # Initialize predictor, takes a while, but only needed once
   predictor = ChessboardPredictor()
@@ -189,14 +191,15 @@ def main(args):
   # Use the worst case certainty as our final uncertainty score
   certainty = tile_certainties.min()
 
-  print('Per-tile certainty:')
-  print(tile_certainties)
-  print("Certainty range [%g - %g], Avg: %g" % (
+  #print('Per-tile certainty:')
+  #print(tile_certainties)
+  #print("Certainty range [%g - %g], Avg: %g" % (
     tile_certainties.min(), tile_certainties.max(), tile_certainties.mean()))
 
   active = args.active
-  print("---\nPredicted FEN:\n%s %s - - 0 1" % (short_fen, active))
-  print("Final Certainty: %.1f%%" % (certainty*100))
+  #print("---\nPredicted FEN:\n%s %s - - 0 1" % (short_fen, active))
+  print("%s %s - - 0 1" % (short_fen, active))
+  #print("Final Certainty: %.1f%%" % (certainty*100))
 
 if __name__ == '__main__':
   np.set_printoptions(suppress=True, precision=3)
