@@ -200,7 +200,7 @@ def main(args):
   #print("---\nPredicted FEN:\n%s %s - - 0 1" % (short_fen, active))
   print("XM1DQLl4ENoiqtKLMf3qAkOPVP0rkUiCTM3H7C5jgfvCAUHwNXwproIOxZY0 %s %s - - 0 1" % (short_fen, active))
   print("%s %s - - 0 1" % (short_fen, active))
-  with open("/tmp/fen.txt", 'a') as out:
+  with open("/tmp/fen.txt", 'w') as out:
     out.write("%s %s - - 0 1" % (short_fen, active))
   #print("Final Certainty: %.1f%%" % (certainty*100))
 
