@@ -31,10 +31,10 @@ RUN python3.7 -m pip install -r requirements.txt
 
 COPY app.py ./
 
-RUN wget https://codeload.github.com/Elucidation/tensorflow_chessbot/zip/chessfenbot
-RUN unzip chessfenbot
-RUN mv tensorflow_chessbot-chessfenbot/* ./
-RUN rm -rf tensorflow_chessbot-chessfenbot
-RUN rm chessfenbot
+RUN wget https://codeload.github.com/lilbillybiscuit/tensorflow_chessbot/zip/refs/heads/master
+RUN unzip master
+RUN mv tensorflow_chessbot-master/* ./
+RUN rm -rf tensorflow_chessbot-master
+RUN rm master
 
 CMD ["app.lambda_handler"]
