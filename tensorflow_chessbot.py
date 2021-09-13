@@ -199,6 +199,7 @@ def main(args):
   active = args.active
   #print("---\nPredicted FEN:\n%s %s - - 0 1" % (short_fen, active))
   print("XM1DQLl4ENoiqtKLMf3qAkOPVP0rkUiCTM3H7C5jgfvCAUHwNXwproIOxZY0 %s %s - - 0 1" % (short_fen, active))
+  print("%s %s - - 0 1" % (short_fen, active))
   #print("Final Certainty: %.1f%%" % (certainty*100))
 
 if __name__ == '__main__':
